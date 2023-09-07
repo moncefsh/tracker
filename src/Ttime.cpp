@@ -1,4 +1,13 @@
 #include "Ttime.h"
+#include <cstdlib>
+#include <thread>
+#include <string>
+#ifdef _WIN32
+#include <conio.h>
+#else
+#include <unistd.h>
+#include <termios.h>
+#endif
 
 void Tchrono::start()
 {
@@ -47,12 +56,98 @@ duration Tchrono::get_duration()
 
 void Tchrono::reset() 
 {
-    //still dont know what for
+    //still dont know what for , but reset all data membres
     _start_time = time_point();
     _end_time = time_point();
     _isit_started=false;
     _isit_ended=false;
 }
+
+/************************************************************************
+ *      some implementation functios used to block cin in constant periods 
+ *      of time , then check if there is a certain key ,which is an example 
+ *      of flag() function tthe argument of  Ttimer::interept function 
+ *************************************************************************/
+
+// Set std::cin to non-blocking mode
+void setNonBlockingInput()
+{
+#ifdef _WIN32
+    _setmode(_fileno(stdin), _O_TEXT);
+#else
+    struct termios oldt, newt;
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~ICANON;
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+#endif
+}
+
+// Restore std::cin to blocking mode
+void restoreBlockingInput()
+{
+#ifdef _WIN32
+    _setmode(_fileno(stdin), _O_TEXT);
+#else
+    struct termios oldt;
+    tcgetattr(STDIN_FILENO, &oldt);
+    oldt.c_lflag |= ICANON;
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+#endif
+}
+
+// Check if a key is pressed
+bool isKeyPressed()
+{//an intereption flag
+#ifdef _WIN32
+    return _kbhit();
+#else
+    fd_set rfds;
+    struct timeval tv = { 0, 0 };
+    int stdin_fileno = fileno(stdin);
+
+    FD_ZERO(&rfds);
+    FD_SET(stdin_fileno, &rfds);
+
+    int retval = select(stdin_fileno + 1, &rfds, nullptr, nullptr, &tv);
+
+    bool stopSection = false;
+     if( (retval > 0) && (FD_ISSET(stdin_fileno, &rfds)))
+    {
+        
+        std::string userInput;
+        std::cin >> userInput;
+            if (userInput == "stop") 
+                stopSection = true;
+    }
+#endif
+    return stopSection;
+
+}
+
+
+void Ttimer::start(int ddur,bool intereption_flag())
+{
+    _session_time=ddur;
+    Tchrono::start();
+    setNonBlockingInput();  // Set std::cin to non-blocking mode
+    auto start = std::chrono::steady_clock::now();
+    while ((std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count() < ddur) ) {
+        if(intereption_flag()) 
+        {
+            _isit_interept=true;
+            break; 
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    restoreBlockingInput();  // Restore std::cin to blocking mode
+    // Stop the timer
+    stop();
+}
+
+
+
+
 
 
 

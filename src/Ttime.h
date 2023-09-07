@@ -32,16 +32,17 @@ typedef std::chrono::duration<double> duration;
 class Tchrono
 {  
 public:
-    Tchrono(): _dur(),_isit_started(false) ,_isit_ended(false)
-                ,_start_time(time_point()),_end_time(time_point()) {}
+    //methods
+    Tchrono(): _dur(0),_isit_started(false) ,_isit_ended(false)
+                ,_start_time(time_point()),_end_time(time_point())  {}
     virtual void  start() ;//start the chrono
-    virtual void stop() ;//stop the chrono
+    virtual void stop() ;//stop the chrono(kill it)
     duration  get_duration();//it gives the duration that the chrono was working on it
     bool isit_started(){return _isit_started;}
     bool isit_ended(){return _isit_ended;}
     time_point start_time() const {return _start_time;}
     time_point end_time() const {return _end_time;}
-    void resume(); // in case the user want to continue after stoping 
+    void reset(); 
 protected:
     time_point _start_time;
     time_point _end_time;

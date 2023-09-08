@@ -22,11 +22,8 @@ typedef chrono::system_clock::time_point time_point;
 typedef std::chrono::duration<double> duration;
 
 
-
-
-
-
-
+//funion that transforme duration to HH:MM:ss forma
+std::string dur_to_string(duration dur);
 
 
 /*************************************************************************************************
@@ -43,7 +40,7 @@ class Tchrono
 {  
 public:
     //methods
-    Tchrono(): _dur(0),_isit_started(false) ,_isit_ended(false)
+    Tchrono(): _dur(chrono::seconds(0)),_isit_started(false) ,_isit_ended(false)
                 ,_start_time(time_point()),_end_time(time_point())  {}
     virtual void  start() ;//start the chrono
     void stop() ;//stop the chrono(kill it)
@@ -84,7 +81,7 @@ class Ttimer: public Tchrono
 {
 public:
     Ttimer()
-        :Tchrono(),_session_time(0),_isit_interept(false){}
+        :Tchrono(),_session_time(chrono::seconds(0)),_isit_interept(false){}
     void start(duration dur,bool interruption_flag() = interrupt_fromCin ); 
     bool isit_finished(){return _isit_interept;}
 
@@ -99,7 +96,7 @@ private:
 };
 
 
-ostream& operator<<(ostream& os,Ttimer tt);//output data of the timer object in a human readebale way
+//ostream& operator<<(ostream& os,Ttimer tt);//output data of the timer object in a human readebale way
 
 
 

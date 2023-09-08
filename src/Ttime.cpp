@@ -11,6 +11,35 @@
 #include <termios.h>
 #endif
 
+
+std::string dur_to_string(duration dur)
+{
+    if(dur < 0.0s)//in case duration is negative
+        throw std::invalid_argument("dur_to_string: negative durration ");
+    auto h = chrono::duration_cast<chrono::hours>(dur);
+    dur -= h;
+    auto m = chrono::duration_cast<chrono::minutes>(dur);
+    dur -= m;
+    auto s =chrono::duration_cast<chrono::seconds>(dur);
+    std::string result;
+    if (h < 10h)
+        result.push_back('0');
+    result += to_string(h/1h);
+    result += ':';
+    if (m < 10min)
+        result.push_back('0');
+    result += to_string(m/1min);
+    result += ':';
+    if (s < 10s)
+        result.push_back('0');
+    result += to_string(s/1s);
+    return result;
+
+
+}
+
+//                                  Tchrono
+
 void Tchrono::start()
 {
     //started the chrono
@@ -33,7 +62,7 @@ void Tchrono::stop()
     {
         _end_time = std::chrono::system_clock::now();//storing the time whin the chrono stoped
         _isit_ended=true;   //indeciting that the chrono is stoped
-        _dur=_end_time - _start_time; //calculing durration
+        _dur =_end_time - _start_time; //calculing durration
         return ;
     }else
     {
@@ -65,8 +94,10 @@ void Tchrono::reset()
     _isit_ended=false;
 }
 
+//-------------------------------------------------------------------------------
 
 
+//                     Ttimer
 
 void Ttimer::start(duration ddur,bool interruption_flag())
 {
@@ -100,7 +131,7 @@ bool interrupt_fromCin()
 }
 
 
-//operations && helpers functions
+//                      operations && helpers functions
 
 
 
@@ -116,11 +147,15 @@ ostream& operator<<(ostream& os,Tchrono ch)
         time_t et= chrono::system_clock::to_time_t(ch.end_time());
         os<<"end "<<put_time(std::gmtime(&et),"%c")<<endl;   
     }
-    //duration
-
-
-    
+    os <<"duration "<<dur_to_string(ch.get_duration())<<endl;
+    return os;
 }
+
+
+
+
+
+
 
 
 

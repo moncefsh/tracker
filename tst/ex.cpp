@@ -67,38 +67,3 @@ bool isKeyPressed()
 
 }*/
 
-
-#include <ncurses.h>
-#include <chrono>
-#include <thread>
-#include <iostream>
-
-int main() {
-    std::cout<<"staring here"<<std::endl;
-    initscr(); // Initialize ncurses
-    cbreak();  // Line buffering disabled
-    noecho();  // Don't display typed characters
-    curs_set(0); // Hide the cursor
-
-    // Print the first line
-    mvprintw(0, 0, "Progress: 0%%");
-    refresh();
-
-    for (int i = 0; i <= 100; ++i) {
-        // Update the first line
-        mvprintw(0, 0, "Progress: %d%%", i);
-        refresh();
-        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Simulate work
-    }
-
-    // Print a new line without affecting the first line
-    mvprintw(1, 0, "Task completed!");
-    refresh();
-
-    getch(); // Wait for a key press before exiting
-    endwin(); // Clean up ncurses
-
-    std::cout<<"we finish here\n";
-
-    return 0;
-}

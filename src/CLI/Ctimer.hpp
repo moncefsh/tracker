@@ -1,31 +1,35 @@
 #include "../Ttime.h"
 #include <thread>
 
-void countdown(Ttimer* timer) {
-    while (timer->isit_started() && !timer->isit_ended()) {
-        std::this_thread::sleep_for(std::chrono::seconds(1)); // Wait for 1 second
-        std::cout << "Time left: " << timer->get_time_remaining() << "\r \n" << std::flush;
-    }
-    std::cout << std::endl;
-}
 
-void Ctimer()
+void run_chrono()
 {
-    cout<<"to start timer entre 'start' "<<endl;
-    cout<<"to exit entre 'exit'"<<endl<<">> : ";
+    Tchrono * t= new Tchrono();
+    cout<<"the chrono start now! \n";
+    cout<<"to stop write 'stop'\n";
+    cout<<"to see time type 'time'\n\n";
+    t->start();
     string str;
-    while(cin>>str)
+    cout<<"1:: ";
+    while(cin>> str)
     {
-        if(str=="start")
-        { 
+        cout<<"1:: ";
+        if(str=="stop")
+        {
+            t->stop();
             break;
         }
-        else if(str == "exit")
+        if(str=="time")
         {
-            cout<<"exiting the timer"<<endl;
-            return ;
+            cout<<dur_to_string(t->get_duration())<<endl;
+            cout<<"1:: ";
         }
     }
+    cout<<endl<<*t<<endl;
+}
+
+void run_timer()
+{
     Ttimer *timer= new Ttimer();
 
     string stdur;
@@ -40,3 +44,32 @@ void Ctimer()
     delete timer; // Don't forget to clean up
 
 }
+
+void Ctimer()
+{
+    cout<<"to start timer entre 'timer' "<<endl;
+    cout<<"to start timer entre 'chrono' "<<endl;
+    cout<<"to exit entre 'exit'"<<endl<<">> : ";
+    string str;
+    while(cin>>str)
+    {
+        if(str=="timer")
+        { 
+            run_timer();
+            break;
+        }
+        else if(str=="chrono")
+        { 
+            run_chrono();
+            break;
+        }
+        else if(str == "exit")
+        {
+            cout<<"exiting the timer"<<endl;
+            return ;
+        }
+    }
+    
+
+}
+

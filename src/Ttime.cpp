@@ -9,6 +9,7 @@
 #else
 #include <unistd.h>
 #include <termios.h>
+#include <stdio.h> 
 #endif
 
 
@@ -110,7 +111,7 @@ void Tchrono::reset()
 
 //                     Ttimer
 
-void Ttimer::start(duration ddur,bool interruption_flag())
+void Ttimer::start(duration ddur,bool interruption_flag(Ttimer *t))
 {
     _session_time=ddur;
     Tchrono::start();
@@ -118,7 +119,7 @@ void Ttimer::start(duration ddur,bool interruption_flag())
     int val=0;
     while (std::chrono::steady_clock::now()-start < ddur)
     {
-        if(interruption_flag())
+        if(interruption_flag(this))
             break;
     }
     this->stop();
@@ -132,21 +133,26 @@ string Ttimer::get_time_remaining()
     return "";
 }
 
-bool interrupt_fromCin()
+bool interrupt_fromCin(Ttimer * t)
 {
     //the function is an example of intereption_flag 
     //the function is called inside a while loop so for evry 400ms the function
     //will check if we got a the key from cin , in case is yes we return true , otherwise false
+    static bool promp=true;
     std::string check;
     std::thread t1([&](){
+        
         std::cin>>check;
     });
-    std::this_thread::sleep_for(std::chrono::milliseconds(400));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     t1.detach();
-    if(check == KEY)   //KEY is macro define in Ttime.h "stop"
+    if(check == STOP)   //KEY is macro define in Ttime.h "stop"
         return true;
-    else    
-        return false;
+    else if(check == TIME)
+        cout<< dur_to_string(t->get_duration())<<"\n";
+    if(check!="")
+        cout<<"1:: ";
+    return false;
 }
 
 

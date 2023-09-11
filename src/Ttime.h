@@ -12,7 +12,8 @@
 #include <string>
 
 
-#define KEY "stop"
+#define STOP "stop"
+#define TIME "time"
 
 
 using namespace std;
@@ -25,6 +26,13 @@ typedef std::chrono::duration<double> duration;
 //funion that transforme duration to HH:MM:ss forma
 std::string dur_to_string(duration dur);
 duration string_to_dur(const std::string& str);
+
+class Tchrono;
+
+class Ttimer;
+
+
+
 
 
 /*************************************************************************************************
@@ -71,19 +79,19 @@ ostream& operator<<(ostream& os,Tchrono ch);//output data of the chrono object i
  *              the stop() method
  * ***********************************************************************************************/
 
-bool interrupt_fromCin();
+// a defaut intereption for terminal
     //the function is an example of intereption_flag 
     //the function is called inside a while loop so for evry 400ms the function
     //will check if we got a the key from cin , in case is yes we return true , otherwise false
-
-
+    bool interrupt_fromCin(Ttimer * t);
+    
 
 class Ttimer: public Tchrono
 {
 public:
     Ttimer()
         :Tchrono(),_session_time(chrono::seconds(0)),_isit_interept(false){}
-    void start(duration dur,bool interruption_flag() = interrupt_fromCin ); 
+    void start(duration dur,bool interruption_flag(Ttimer *t) = interrupt_fromCin ); 
     bool isit_finished(){return _isit_interept;}
 
 
@@ -95,6 +103,8 @@ public:
 private:
     duration _session_time;//in second;
     bool _isit_interept;//is duration == session_time
+
+    
 };
 
 

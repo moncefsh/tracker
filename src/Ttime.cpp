@@ -38,6 +38,17 @@ std::string dur_to_string(duration dur)
 
 }
 
+duration string_to_dur(const std::string& str) {
+    int h, m, s;
+
+    if (sscanf( str.c_str() ,"%2d:%2d:%2d",&h,&m,&s)!=3) {
+        throw std::invalid_argument("string_to_dur: invalid input format hh:mm:ss");
+    }
+
+    duration dur = std::chrono::hours(h) + std::chrono::minutes(m) + std::chrono::seconds(s);
+    return dur;
+}
+
 //                                  Tchrono
 
 void Tchrono::start()
@@ -113,6 +124,14 @@ void Ttimer::start(duration ddur,bool interruption_flag())
     this->stop();
 }
 
+string Ttimer::get_time_remaining()
+{
+    duration remaining = this->_session_time - this->get_duration();
+    if(remaining >=0s)
+        return dur_to_string(remaining);
+    return "";
+}
+
 bool interrupt_fromCin()
 {
     //the function is an example of intereption_flag 
@@ -129,6 +148,8 @@ bool interrupt_fromCin()
     else    
         return false;
 }
+
+
 
 
 //                      operations && helpers functions

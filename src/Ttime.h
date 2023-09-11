@@ -24,6 +24,7 @@ typedef std::chrono::duration<double> duration;
 
 //funion that transforme duration to HH:MM:ss forma
 std::string dur_to_string(duration dur);
+duration string_to_dur(const std::string& str);
 
 
 /*************************************************************************************************
@@ -85,9 +86,10 @@ public:
     void start(duration dur,bool interruption_flag() = interrupt_fromCin ); 
     bool isit_finished(){return _isit_interept;}
 
+
     //bool interept(bool flag()); //flag is a boolen function that check from some conditions to interept the  timer
                                 //for example it may check (in constant time intervales ) for some key_word in some input stream
-
+    string get_time_remaining();
     duration session() const {return _session_time;}
 
 private:

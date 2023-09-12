@@ -144,7 +144,7 @@ bool interrupt_fromCin(Ttimer * t)
         
         std::cin>>check;
     });
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
     t1.detach();
     if(check == STOP)   //KEY is macro define in Ttime.h "stop"
         return true;
